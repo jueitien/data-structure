@@ -50,6 +50,11 @@ Transaction* load_transactions_from_csv(const std::string& filename) {
         return nullptr;
     }
 
+    size_t max_rows = 0;
+    std::cout << "Enter number of rows to load from CSV: ";
+    std::cin >> max_rows;
+    std::cin.ignore(); // Clear newline
+
     std::string line;
     // Skip header
     std::getline(file, line);
@@ -59,6 +64,7 @@ Transaction* load_transactions_from_csv(const std::string& filename) {
     size_t row_count = 0;
     size_t transaction_count = 0;
     while (std::getline(file, line)) {
+        if (max_rows > 0 && row_count >= max_rows) break;
         row_count++;
         std::stringstream ss(line);
         std::string field;
