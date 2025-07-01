@@ -7,12 +7,12 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}\\DS code\\array\\Linear_search.cpp",
-                "${workspaceFolder}\\DS code\\array\\Binary_Search.cpp",
-                "${workspaceFolder}\\DS code\\array\\Main.cpp",
-                "${workspaceFolder}\\DS code\\array\\Store.cpp",
+                "${workspaceFolder}\\array\\Store.cpp",
+                "${workspaceFolder}\\array\\Linear_search.cpp",
+                "${workspaceFolder}\\array\\Binary_Search.cpp",
+                "${workspaceFolder}\\array\\Main.cpp",
                 "-o",
-                "${workspaceFolder}\\DS code\\array\\Main.exe"
+                "${workspaceFolder}\\Main.exe"
             ],
             "options": {
                 "cwd": "C:\\MinGW-W64 build\\mingw64\\bin"
