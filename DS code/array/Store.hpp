@@ -4,4 +4,8 @@
 void storeSeperate();
 void storeAll();
 
+void SearchByLinear(); 
+void SearchByBinary(); 
+
+
 #endif

@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 using namespace std;
 
@@ -22,5 +23,8 @@ struct Transaction {
     string device_hash;
 };
 
+
+// This tells other files: "This variable exists somewhere else."
 extern Transaction* filtered_transactions;
 extern int transactionCount;  
+

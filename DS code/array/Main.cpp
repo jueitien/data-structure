@@ -1,8 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
+#include <string>
 
 #include "Store.hpp"
+
+void searchbababa(){
+    std::cout << "\nEnter the searching method: \n1.Linear Search \n2.Binary Search\n\nEnter your choice: ";
+    std::string input;
+    std::getline(std::cin, input);
+    int search_target = std::stoi(input);
+
+    if (search_target == 1) {
+        SearchByLinear();
+    } else if (search_target == 2) {
+        SearchByBinary();
+    } else {
+        std::cout << "Invalid Input";
+    }
+}
 
 void showMenu() {
     int choice;
@@ -25,26 +42,21 @@ void showMenu() {
             case 1:
                 storeSeperate();
                 break;
+
             case 2:
                 storeAll();
                 break;
+
             case 3:
-                printf("Enter keyword to search: ");
-                fgets(input, sizeof(input), stdin);
-                input[strcspn(input, "\n")] = '\0'; // remove newline
-            case 4:
-                printf("Enter number of rows to print: ");
-                int n;
-                scanf("%d", &n);
+                searchbababa();
                 break;
-            case 5:
-                printf("Exiting program...\n");
-                break;
+
             default:
                 printf("Invalid choice. Try again.\n");
-        }
+    }
 
-    } while (choice != 5);
+} while (choice != 5);
+
 
 }
 

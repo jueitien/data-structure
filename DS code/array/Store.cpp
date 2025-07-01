@@ -52,17 +52,17 @@ bool parseTransaction(const string& line, Transaction &tx) {
     return (field == 18);
 }
 
+int transactionCount = 0;
 void storeSeperate() {
     FILE *fp;
     char row[MAXCHAR];
-    int count = 0;
     char input[50];
-
+    transactionCount = 0;
     cout << "Enter payment channel to filter (card, wire_transfer, ACH, UPI): ";
     fgets(input, sizeof(input), stdin);
     input[strcspn(input, "\n")] = 0;  // Remove newline
 
-    fp = fopen("financial_fraud_detection_dataset.csv", "r");
+    fp = fopen("C:/Users/GF63/Downloads/financial_fraud_detection_dataset.csv", "r");
     if (!fp) {
         cout << "Error opening file.\n";
         return;
@@ -71,28 +71,28 @@ void storeSeperate() {
     // Skip header
     fgets(row, MAXCHAR, fp);
 
-    while (fgets(row, MAXCHAR, fp) != NULL && count < MAX_FILTERED_ROWS) {
+    while (fgets(row, MAXCHAR, fp) != NULL && transactionCount < MAX_FILTERED_ROWS) {
         if (strstr(row, input) != NULL) {
             char row_copy[MAXCHAR];
             strcpy(row_copy, row); // Make a copy since strtok modifies it
-            if (parseTransaction(row_copy, filtered_transactions[count])) {
-                count++;
+            if (parseTransaction(row_copy, filtered_transactions[transactionCount])) {
+                transactionCount++;
             }
         }
     }
 
     fclose(fp);
 
-    cout << "Filtered and stored " << count << " rows for channel \"" << input << "\".\n";
+    cout << "Filtered and stored " << transactionCount << " rows for channel \"" << input << "\".\n";
 }
 
 void storeAll(){
 
     FILE *fp;
     char row[MAXCHAR];
-    int count = 0;
+    transactionCount = 0;
 
-    fp = fopen("financial_fraud_detection_dataset.csv", "r");
+    fp = fopen("C:/Users/GF63/Downloads/financial_fraud_detection_dataset.csv", "r");
     if (!fp) {
         cout << "Error opening file.\n";
         return;
@@ -101,19 +101,19 @@ void storeAll(){
     // Skip header
     fgets(row, MAXCHAR, fp);
 
-    while (fgets(row, MAXCHAR, fp) != NULL && count < MAX_FILTERED_ROWS) {
+    while (fgets(row, MAXCHAR, fp) != NULL && transactionCount < MAX_FILTERED_ROWS) {
         char row_copy[MAXCHAR];
         strcpy(row_copy, row); // Make a copy since stringstream doesn't work on C strings directly
-        if (parseTransaction(string(row_copy), filtered_transactions[count])) {
-            count++;
+        if (parseTransaction(string(row_copy), filtered_transactions[transactionCount])) {
+            transactionCount++;
         }
 
-        if (count % 1000000 == 0) {
-            cout << "Parsed " << count << " transactions...\n";
+        if (transactionCount % 1000000 == 0) {
+            cout << "Parsed " << transactionCount << " transactions...\n";
         }
     }
 
     fclose(fp);
 
-    cout << "Finished storing " << count << " transactions.\n";
+    cout << "Finished storing " << transactionCount << " transactions.\n";
 }
