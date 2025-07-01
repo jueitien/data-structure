@@ -56,11 +56,14 @@ Transaction* load_transactions_from_csv(const std::string& filename) {
 
     Transaction* head = nullptr;
     Transaction* tail = nullptr;
-
+    size_t row_count = 0;
+    size_t transaction_count = 0;
     while (std::getline(file, line)) {
+        row_count++;
         std::stringstream ss(line);
         std::string field;
         Transaction* node = new Transaction();
+        bool valid = true;
 
         // Read and clean each field
         std::getline(ss, field, ','); node->transaction_id = clean_string(field);
@@ -82,19 +85,36 @@ Transaction* load_transactions_from_csv(const std::string& filename) {
         std::getline(ss, field, ','); node->ip_address = clean_string(field);
         std::getline(ss, field, ','); node->device_hash = clean_string(field);
 
+        // Optionally, add checks for required fields
+        if (node->transaction_id.empty()) valid = false;
+        // ...add more checks as needed...
+
         node->next = nullptr;
 
-        if (!head) {
-            head = node;
-            tail = node;
+        if (valid) {
+            if (!head) {
+                head = node;
+                tail = node;
+            } else {
+                tail->next = node;
+                tail = node;
+            }
+            transaction_count++;
         } else {
-            tail->next = node;
-            tail = node;
+            delete node;
+            // std::cerr << "Skipped row " << row_count << ": invalid data\n";
+        }
+
+        if (row_count % 100000 == 0) {
+            std::cout << "Processed " << row_count << " rows\n";
         }
     }
+    std::cout << "Total rows processed: " << row_count << std::endl;
+    std::cout << "Number of transactions processed: " << transaction_count << std::endl;
     file.close();
     return head;
 }
+
 
 // Global linked list heads for each payment channel
 Transaction* card_head = nullptr;
@@ -144,4 +164,32 @@ void split_by_payment_channel(Transaction* head) {
         // If payment_channel is not one of the above, ignore or handle as needed
         curr = next;
     }
+}
+
+// Function to merge all payment channel lists into a single list
+Transaction* merge_all_payment_channels() {
+    Transaction* merged_head = nullptr;
+    Transaction* merged_tail = nullptr;
+
+    auto append_list = [&](Transaction* &head) {
+        if (!head) return;
+        if (!merged_head) {
+            merged_head = head;
+            // Find tail
+            merged_tail = head;
+            while (merged_tail->next) merged_tail = merged_tail->next;
+        } else {
+            merged_tail->next = head;
+            // Advance tail to new end
+            while (merged_tail->next) merged_tail = merged_tail->next;
+        }
+        head = nullptr; // Clear the original head pointer
+    };
+
+    append_list(card_head);
+    append_list(ACH_head);
+    append_list(UPI_head);
+    append_list(wire_transfer_head);
+
+    return merged_head;
 }
