@@ -96,51 +96,52 @@ Transaction* load_transactions_from_csv(const std::string& filename) {
     return head;
 }
 
-// Global linked list heads for each transaction type
-Transaction* withdrawal_head = nullptr;
-Transaction* deposit_head = nullptr;
-Transaction* transfer_head = nullptr;
-Transaction* payment_head = nullptr;
+// Global linked list heads for each payment channel
+Transaction* card_head = nullptr;
+Transaction* ACH_head = nullptr;
+Transaction* UPI_head = nullptr;
+Transaction* wire_transfer_head = nullptr;
 
-// Function to split the linked list into four global lists by transaction_type
-void split_by_transaction_type(Transaction* head) {
-    Transaction *withdrawal_tail = nullptr, *deposit_tail = nullptr, *transfer_tail = nullptr, *payment_tail = nullptr;
+// Function to split the linked list into four global lists by payment_channel
+void split_by_payment_channel(Transaction* head) {
+    Transaction *card_tail = nullptr, *ACH_tail = nullptr, *UPI_tail = nullptr, *wire_transfer_tail = nullptr;
     for (auto curr = head; curr != nullptr; ) {
         Transaction* next = curr->next;
         curr->next = nullptr;
-        if (curr->transaction_type == "withdrawal") {
-            if (!withdrawal_head) {
-                withdrawal_head = curr;
-                withdrawal_tail = curr;
+        if (curr->payment_channel == "card") {
+            if (!card_head) {
+                card_head = curr;
+                card_tail = curr;
             } else {
-                withdrawal_tail->next = curr;
-                withdrawal_tail = curr;
+                card_tail->next = curr;
+                card_tail = curr;
             }
-        } else if (curr->transaction_type == "deposit") {
-            if (!deposit_head) {
-                deposit_head = curr;
-                deposit_tail = curr;
+        } else if (curr->payment_channel == "ACH") {
+            if (!ACH_head) {
+                ACH_head = curr;
+                ACH_tail = curr;
             } else {
-                deposit_tail->next = curr;
-                deposit_tail = curr;
+                ACH_tail->next = curr;
+                ACH_tail = curr;
             }
-        } else if (curr->transaction_type == "transfer") {
-            if (!transfer_head) {
-                transfer_head = curr;
-                transfer_tail = curr;
+        } else if (curr->payment_channel == "UPI") {
+            if (!UPI_head) {
+                UPI_head = curr;
+                UPI_tail = curr;
             } else {
-                transfer_tail->next = curr;
-                transfer_tail = curr;
+                UPI_tail->next = curr;
+                UPI_tail = curr;
             }
-        } else if (curr->transaction_type == "payment") {
-            if (!payment_head) {
-                payment_head = curr;
-                payment_tail = curr;
+        } else if (curr->payment_channel == "wire_transfer") {
+            if (!wire_transfer_head) {
+                wire_transfer_head = curr;
+                wire_transfer_tail = curr;
             } else {
-                payment_tail->next = curr;
-                payment_tail = curr;
+                wire_transfer_tail->next = curr;
+                wire_transfer_tail = curr;
             }
         }
+        // If payment_channel is not one of the above, ignore or handle as needed
         curr = next;
     }
 }

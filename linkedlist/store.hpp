@@ -12,11 +12,11 @@ bool clean_bool(const std::string& s);
 // Main loader function
 Transaction* load_transactions_from_csv(const std::string& filename);
 
-// Global linked list heads for each transaction type
-extern Transaction* withdrawal_head;
-extern Transaction* deposit_head;
-extern Transaction* transfer_head;
-extern Transaction* payment_head;
+// Global linked list heads for each payment channel
+extern Transaction* card_head;
+extern Transaction* ACH_head;
+extern Transaction* UPI_head;
+extern Transaction* wire_transfer_head;
 
-// Function to split the linked list into four global lists by transaction_type
-void split_by_transaction_type(Transaction* head);
+// Function to split the linked list into four global lists by payment_channel
+void split_by_payment_channel(Transaction* head);
