@@ -11,8 +11,7 @@ bool clean_bool(const std::string& s);
 
 // Main loader function
 Transaction* load_transactions_from_csv(const std::string& filename);
-// Main loader function
-Transaction* load_transactions_from_csv_raw(const std::string& filename);
+
 
 // Global linked list heads for each payment channel
 extern Transaction* card_head;
