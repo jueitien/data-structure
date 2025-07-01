@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build All",
+            "type": "shell",
+            "command": "C:\\Users\\party\\Downloads\\x86_64-15.1.0-release-win32-seh-ucrt-rt_v12-rev0\\mingw64\\bin\\g++.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "linkedlist\\main-linked.cpp",
+                "linkedlist\\store.cpp",
+                "linkedlist\\node.cpp",
+                "linkedlist\\generate.cpp",
+                "linkedlist\\search.cpp",
+                "linkedlist\\sort.cpp",
+                "linkedlist\\textChecker.cpp",
+                "-o",
+                "linkedlist\\main-linked.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Builds all project source files."
+        }
+    ]
+}

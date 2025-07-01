@@ -1,0 +1,22 @@
+#pragma once
+#include "node.hpp"
+#include <string>
+
+// Helper function declarations
+std::string trim(const std::string& s);
+std::string clean_string(const std::string& s);
+double clean_double(const std::string& s);
+int clean_int(const std::string& s);
+bool clean_bool(const std::string& s);
+
+// Main loader function
+Transaction* load_transactions_from_csv(const std::string& filename);
+
+// Global linked list heads for each transaction type
+extern Transaction* withdrawal_head;
+extern Transaction* deposit_head;
+extern Transaction* transfer_head;
+extern Transaction* payment_head;
+
+// Function to split the linked list into four global lists by transaction_type
+void split_by_transaction_type(Transaction* head);
