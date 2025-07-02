@@ -5,11 +5,7 @@
 using namespace std;
 
 
-string to_lowercase(const string& str) {
-    string lower = str;
-    transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-    return lower;
-}
+
 
 // Get middle node between start and end
 Transaction* getMiddle(Transaction* start, Transaction* end) {
