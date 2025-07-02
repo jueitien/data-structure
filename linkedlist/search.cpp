@@ -101,11 +101,11 @@ void search_by_payment_channel_and_type() {
     cout << "Methods to search (linear search[1], Sort before search[2]): ";
     cin >> method;
 
-    if(method = 1){
+    if(method == 1){
         cout << "\n--- Search Results for '" << column_name << "' in channel '" << channel << "' with the value of '" << type << "'---\n";
         searchByType(selected, type, column_input);
         return;
-    }else if(method = 2){
+    }else if(method == 2){
         cout << "\n--- Search Results for '" << column_name << "' in channel '" << channel << "' with the value of '" << type << "'---\n";
         searchByType2(selected, type, column_input);
         return;
