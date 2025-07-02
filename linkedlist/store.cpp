@@ -51,10 +51,19 @@ Transaction* load_transactions_from_csv(const std::string& filename) {
     }
 
     size_t max_rows = 0;
-    std::cout << "Enter number of rows to load from CSV: ";
-    std::cin >> max_rows;
-    std::cin.ignore(); // Clear newline
-
+    std::cout << "Enter number of rows to load from CSV (or type 'all'): ";
+    std::string input;
+    std::getline(std::cin, input);
+    if (input == "all" || input == "ALL" || input == "All") {
+        max_rows = 0; // 0 means load all
+    } else {
+        try {
+            max_rows = std::stoull(input);
+        } catch (...) {
+            std::cout << "Invalid input, loading all rows.\n";
+            max_rows = 0;
+        }
+    }
     std::string line;
     // Skip header
     std::getline(file, line);
