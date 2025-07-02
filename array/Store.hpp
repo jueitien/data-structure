@@ -1,3 +1,4 @@
+#include "Data_structure.hpp"
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
 
@@ -6,6 +7,7 @@ void storeAll();
 
 void SearchByLinear(); 
 void SearchByBinary(); 
+void generateJsonReport(Transaction transactions[],int size);
 
 
 #endif
