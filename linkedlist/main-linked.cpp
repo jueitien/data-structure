@@ -1,6 +1,7 @@
 #include <iostream>
 #include "store.hpp"
 #include "textChecker.hpp"
+#include "search.hpp"
 #include "sort.hpp" // Include sort.hpp for sort_transactions
 
 int main() {
@@ -103,8 +104,8 @@ int main() {
             else if (channel == "wire_transfer") selected = &wire_transfer_head;
             sort_transactions(*selected);
         } else if (op == 3) {
-            std::cout << "Search operation selected. (Not implemented)\n";
-            // ...call search function here...
+            std::cout << "Search operation selected.\n";
+            search_by_payment_channel_and_type();
         } else if (op == 4) {
             std::cout << "Generate JSON operation selected. (Not implemented)\n";
             // ...call generate json function here...
