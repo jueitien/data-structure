@@ -5,31 +5,6 @@
 #include <chrono>
 #include <fstream>
 
-// Helper function to compare locations based on order
-static bool compare_location(const std::string& a, const std::string& b, SortOrder order) {
-    if (order == SortOrder::Ascending)
-        return a < b;
-    else
-        return a > b;
-}
-
-// Merge two sorted lists by location
-static Transaction* merge_sorted_lists(Transaction* l1, Transaction* l2, SortOrder order) {
-    Transaction dummy;
-    Transaction* tail = &dummy;
-    while (l1 && l2) {
-        if (compare_location(l1->location, l2->location, order)) {
-            tail->next = l1;
-            l1 = l1->next;
-        } else {
-            tail->next = l2;
-            l2 = l2->next;
-        }
-        tail = tail->next;
-    }
-    tail->next = l1 ? l1 : l2;
-    return dummy.next;
-}
 
 // Helper function to trim and lowercase a string
 static std::string to_lower(const std::string& s) {
@@ -113,34 +88,6 @@ static void split_list(Transaction* head, Transaction** first, Transaction** sec
     if (slow) slow->next = nullptr;
 }
 
-// Merge sort by location
-Transaction* merge_sort_by_location(Transaction* head, SortOrder order) {
-    if (!head || !head->next) return head;
-    Transaction* first = nullptr;
-    Transaction* second = nullptr;
-    split_list(head, &first, &second);
-    first = merge_sort_by_location(first, order);
-    second = merge_sort_by_location(second, order);
-    return merge_sorted_lists(first, second, order);
-}
-
-// Insertion sort by location
-Transaction* insertion_sort_by_location(Transaction* head, SortOrder order) {
-    Transaction dummy;
-    dummy.next = nullptr;
-    Transaction* curr = head;
-    while (curr) {
-        Transaction* next = curr->next;
-        Transaction* prev = &dummy;
-        while (prev->next && compare_location(prev->next->location, curr->location, order))
-            prev = prev->next;
-        curr->next = prev->next;
-        prev->next = curr;
-        curr = next;
-    }
-    return dummy.next;
-}
-
 // Merge sort by field
 Transaction* merge_sort_by_field(Transaction* head, const std::string& field, SortOrder order) {
     if (!head || !head->next) return head;
@@ -173,14 +120,64 @@ Transaction* insertion_sort_by_field(Transaction* head, const std::string& field
 void sort_transactions(Transaction*& head) {
     int algo_choice = 0, order_choice = 0;
     std::string field;
-    std::cout << "Choose sorting algorithm:\n1. Merge Sort\n2. Insertion Sort\nEnter choice: ";
-    std::cin >> algo_choice;
-    std::cin.ignore();
-    std::cout << "Enter column name to sort by (e.g., amount, timestamp, location): ";
-    std::getline(std::cin, field);
-    field = to_lower(field);
-    std::cout << "Sort in:\n1. Ascending order\n2. Descending order\nEnter choice: ";
-    std::cin >> order_choice;
+
+    // Validate sorting algorithm choice
+    while (true) {
+        std::cout << "Choose sorting algorithm:\n1. Merge Sort\n2. Insertion Sort\nEnter choice: ";
+        std::cin >> algo_choice;
+        if (std::cin.fail() || (algo_choice != 1 && algo_choice != 2)) {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Invalid choice. Please enter 1 or 2.\n";
+        } else {
+            std::cin.ignore();
+            break;
+        }
+    }
+
+    // Validate field name (manual string checks)
+    while (true) {
+        std::cout << "Enter column name to sort by (e.g., amount, timestamp, location): ";
+        std::getline(std::cin, field);
+        field = to_lower(field);
+        if (
+            field == "transaction_id" ||
+            field == "timestamp" ||
+            field == "sender_account" ||
+            field == "receiver_account" ||
+            field == "amount" ||
+            field == "transaction_type" ||
+            field == "merchant_category" ||
+            field == "location" ||
+            field == "device_used" ||
+            field == "is_fraud" ||
+            field == "fraud_type" ||
+            field == "time_since_last_transaction" ||
+            field == "spending_deviation_score" ||
+            field == "velocity_score" ||
+            field == "geo_anomaly_score" ||
+            field == "payment_channel" ||
+            field == "ip_address" ||
+            field == "device_hash"
+        ) {
+            break;
+        } else {
+            std::cout << "Invalid field name. Please enter a valid field.\n";
+        }
+    }
+
+    // Validate sort order
+    while (true) {
+        std::cout << "Sort in:\n1. Ascending order\n2. Descending order\nEnter choice: ";
+        std::cin >> order_choice;
+        if (std::cin.fail() || (order_choice != 1 && order_choice != 2)) {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Invalid choice. Please enter 1 or 2.\n";
+        } else {
+            break;
+        }
+    }
     SortOrder order = (order_choice == 2) ? SortOrder::Descending : SortOrder::Ascending;
 
     // Count items before sorting
@@ -210,5 +207,32 @@ void sort_transactions(Transaction*& head) {
         << std::endl;
     log.close();
 
+    // Write sorted values to file
+    std::ofstream out(algo_choice == 2 ? "sort_insertion.txt" : "sort_merge.txt");
+    tmp = head;
+    while (tmp) {
+        out << tmp->transaction_id << ','
+            << tmp->timestamp << ','
+            << tmp->sender_account << ','
+            << tmp->receiver_account << ','
+            << tmp->amount << ','
+            << tmp->transaction_type << ','
+            << tmp->merchant_category << ','
+            << tmp->location << ','
+            << tmp->device_used << ','
+            << tmp->is_fraud << ','
+            << tmp->fraud_type << ','
+            << tmp->time_since_last_transaction << ','
+            << tmp->spending_deviation_score << ','
+            << tmp->velocity_score << ','
+            << tmp->geo_anomaly_score << ','
+            << tmp->payment_channel << ','
+            << tmp->ip_address << ','
+            << tmp->device_hash << '\n';
+        tmp = tmp->next;
+    }
+    out.close();
+
     std::cout << "Sorted " << count << " items in " << elapsed.count() << " ms. (Logged to sort_log.txt)\n";
+    std::cout << "Sorted data written to " << (algo_choice == 2 ? "sort_insertion.txt" : "sort_merge.txt") << std::endl;
 }

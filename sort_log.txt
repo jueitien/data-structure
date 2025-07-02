@@ -1,3 +1,0 @@
-Algorithm: Merge Sort, Field: location, Order: Ascending, Items: 25130, Time(ms): 66.12
-Algorithm: Insertion Sort, Field: location, Order: Ascending, Items: 25130, Time(ms): 35126
-Algorithm: Insertion Sort, Field: location, Order: Ascending, Items: 25130, Time(ms): 16915.8

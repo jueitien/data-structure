@@ -1,2 +1,4 @@
 financial_fraud_detection_dataset.csv
 .vscode
+*.txt
+sort_log.txt

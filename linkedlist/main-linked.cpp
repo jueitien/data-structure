@@ -2,6 +2,7 @@
 #include "store.hpp"
 #include "textChecker.hpp"
 #include "search.hpp"
+#include "sort.hpp" // Include sort.hpp for sort_transactions
 
 int main() {
     std::string filename = "financial_fraud_detection_dataset.csv";
@@ -15,25 +16,53 @@ int main() {
     bool running = true;
     while (running) {
         // Operation menu
-        std::cout << "Choose operation:\n";
-        std::cout << "1. Display transactions by payment channel\n";
-        std::cout << "2. Sort transactions\n";
-        std::cout << "3. Search transactions\n";
-        std::cout << "4. Generate JSON\n";
-        std::cout << "Enter choice (1-4): ";
-        int op;
-        std::cin >> op;
-        std::cin.ignore(); // Clear newline
+        int op = 0;
+        while (true) {
+            std::cout << "Choose operation:\n";
+            std::cout << "1. Display transactions by payment channel\n";
+            std::cout << "2. Sort transactions\n";
+            std::cout << "3. Search transactions\n";
+            std::cout << "4. Generate JSON\n";
+            std::cout << "Enter choice (1-4): ";
+            std::cin >> op;
+            if (std::cin.fail() || op < 1 || op > 4) {
+                std::cin.clear();
+                std::cin.ignore(10000, '\n');
+                std::cout << "Invalid operation. Please enter a number from 1 to 4.\n";
+            } else {
+                std::cin.ignore();
+                break;
+            }
+        }
 
+        bool valid_action = true;
         if (op == 1) {
             // Ask user for payment channel and count
             std::string channel;
             int num;
-            std::cout << "Enter payment channel (card, ACH, UPI, wire_transfer): ";
-            std::cin >> channel;
-            std::cout << "How many transactions to display? ";
-            std::cin >> num;
-            std::cin.ignore();
+            // Validate channel input
+            while (true) {
+                std::cout << "Enter payment channel (card, ACH, UPI, wire_transfer): ";
+                std::cin >> channel;
+                if (channel == "card" || channel == "ACH" || channel == "UPI" || channel == "wire_transfer") {
+                    break;
+                } else {
+                    std::cout << "Invalid channel. Please enter one of: card, ACH, UPI, wire_transfer.\n";
+                }
+            }
+            // Validate number of transactions
+            while (true) {
+                std::cout << "How many transactions to display? ";
+                std::cin >> num;
+                if (std::cin.fail() || num <= 0) {
+                    std::cin.clear();
+                    std::cin.ignore(10000, '\n');
+                    std::cout << "Invalid number. Please enter a positive integer.\n";
+                } else {
+                    std::cin.ignore();
+                    break;
+                }
+            }
 
             // Select the appropriate list
             Transaction* selected = nullptr;
@@ -41,13 +70,9 @@ int main() {
             else if (channel == "ACH") selected = ACH_head;
             else if (channel == "UPI") selected = UPI_head;
             else if (channel == "wire_transfer") selected = wire_transfer_head;
-            else {
-                std::cout << "Invalid channel." << std::endl;
-                continue;
-            }
 
             // Print the requested number of transactions
-            curr = selected;
+            Transaction* curr = selected;
             int printed = 0;
             while (curr && printed < num) {
                 std::cout << "ID: " << curr->transaction_id
@@ -59,8 +84,25 @@ int main() {
                 ++printed;
             }
         } else if (op == 2) {
-            std::cout << "Sort operation selected. (Not implemented)\n";
-            // ...call sort function here...
+            // Use sort_transactions from sort.hpp
+            std::cout << "Sort operation selected.\n";
+            std::string channel;
+            // Validate channel input
+            while (true) {
+                std::cout << "Enter payment channel to sort (card, ACH, UPI, wire_transfer): ";
+                std::cin >> channel;
+                if (channel == "card" || channel == "ACH" || channel == "UPI" || channel == "wire_transfer") {
+                    break;
+                } else {
+                    std::cout << "Invalid channel. Please enter one of: card, ACH, UPI, wire_transfer.\n";
+                }
+            }
+            Transaction** selected = nullptr;
+            if (channel == "card") selected = &card_head;
+            else if (channel == "ACH") selected = &ACH_head;
+            else if (channel == "UPI") selected = &UPI_head;
+            else if (channel == "wire_transfer") selected = &wire_transfer_head;
+            sort_transactions(*selected);
         } else if (op == 3) {
             std::cout << "Search operation selected.\n";
             search_by_payment_channel_and_type();
@@ -68,25 +110,29 @@ int main() {
             std::cout << "Generate JSON operation selected. (Not implemented)\n";
             // ...call generate json function here...
         } else {
+            valid_action = false;
             std::cout << "Invalid operation.\n";
         }
 
-        // After operation, call text checker menu
-        bool to_menu = text_checker_menu();
-        if (!to_menu) {
-            // Free the linked lists before exit
-            Transaction* lists[] = {card_head, ACH_head, UPI_head, wire_transfer_head};
-            for (int i = 0; i < 4; ++i) {
-                curr = lists[i];
-                while (curr) {
-                    Transaction* next = curr->next;
-                    delete curr;
-                    curr = next;
+        // Only call text checker if a valid action was performed
+        if (valid_action) {
+            bool to_menu = text_checker_menu();
+            if (!to_menu) {
+                // Free the linked lists before exit
+                Transaction* lists[] = {card_head, ACH_head, UPI_head, wire_transfer_head};
+                Transaction* curr;
+                for (int i = 0; i < 4; ++i) {
+                    curr = lists[i];
+                    while (curr) {
+                        Transaction* next = curr->next;
+                        delete curr;
+                        curr = next;
+                    }
                 }
+                running = false;
             }
-            running = false;
         }
-        // else: loop back to main menu
+        // else: loop back to main menu without calling text checker
     }
 
     return 0;
