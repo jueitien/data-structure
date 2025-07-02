@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "search.hpp"
 #include "store.hpp"
+#include "sort_before_search.hpp"
 
 using namespace std;
 
@@ -22,27 +23,13 @@ void searchByType(Transaction* head, const string& type, int column_input) {
         string field_value;
 
         switch (column_input) {
-            case 1:
-                field_value = temp->transaction_id;
-                break;
-            case 2:
-                field_value = temp->sender_account;
-                break;
-            case 3:
-                field_value = temp->receiver_account;
-                break;
-            case 4:
-                field_value = std::to_string(temp->amount);  // convert double to string
-                break;
-            case 5:
-                field_value = temp->transaction_type;
-                break;
-            case 6:
-                field_value = temp->location;
-                break;
-            case 7:
-                field_value = temp->fraud_type;
-                break;
+            case 1:field_value = temp->transaction_id;break;
+            case 2:field_value = temp->sender_account;break;
+            case 3:field_value = temp->receiver_account;break;
+            case 4:field_value = std::to_string(temp->amount);break;
+            case 5:field_value = temp->transaction_type;break;
+            case 6:field_value = temp->location;break;
+            case 7:field_value = temp->fraud_type;break;
             default:
                 std::cout << "Invalid column input.\n";
                 return;
@@ -89,20 +76,44 @@ void search_by_payment_channel_and_type() {
 
     string type;
     int column_input;
+    string column_name;
+    int method;
 
     cout << "Which column you want to search? (Transaction ID[1], Sender Account[2], Receiver Account[3], Amount[4], Transaction Type[5], Location[6], Fraud Type[7]): ";
     cin >> column_input;
+
+    switch (column_input) {
+        case 1: column_name = "transaction_id"; break;
+        case 2: column_name = "sender_account"; break;
+        case 3: column_name = "receiver_account"; break;
+        case 4: column_name = "amount"; break;
+        case 5: column_name = "transaction_type"; break;
+        case 6: column_name = "location"; break;
+        case 7: column_name = "fraud_type"; break;
+        default: cout << "Invalid input. Please insert (1/2/3/4/5/6/7)\n"; return;
+    }
     
     
 
-    cout << "Enter the value to search (Transaction Type: withdrawal, deposit, transfer): ";
+    cout << "Enter the value to search: ";
     cin >> type;
 
+    cout << "Methods to search (linear search[1], Sort before search[2]): ";
+    cin >> method;
+
+    if(method = 1){
+        cout << "\n--- Search Results for '" << column_name << "' in channel '" << channel << "' with the value of '" << type << "'---\n";
+        searchByType(selected, type, column_input);
+        return;
+    }else if(method = 2){
+        cout << "\n--- Search Results for '" << column_name << "' in channel '" << channel << "' with the value of '" << type << "'---\n";
+        searchByType2(selected, type, column_input);
+        return;
+    }
+
     
 
-    cout << "\n--- Search Results for type '" << type << "' in channel '" << channel << "' ---\n";
-    searchByType(selected, type, column_input);
-    return;
+    
 
 
 
