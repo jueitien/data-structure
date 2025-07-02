@@ -1,11 +1,14 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <chrono>
 #include "search.hpp"
 #include "store.hpp"
 #include "sort_before_search.hpp"
 
+
 using namespace std;
+using namespace std::chrono;
 
 // Helper: convert string to lowercase
 string to_lowercase(const string& str) {
@@ -102,12 +105,20 @@ void search_by_payment_channel_and_type() {
     cin >> method;
 
     if(method == 1){
-        cout << "\n--- Search Results for '" << column_name << "' in channel '" << channel << "' with the value of '" << type << "'---\n";
+        auto start = high_resolution_clock::now();
+        cout << "\n--- Search Results for '" << column_name << "' in channel '" << channel << "' with the value of '" << type << "'(Linear search)---\n";
         searchByType(selected, type, column_input);
+        auto end = high_resolution_clock::now(); 
+        auto duration = duration_cast<microseconds>(end - start);
+        cout << "Search took " << duration.count() << " microseconds.\n";
         return;
     }else if(method == 2){
-        cout << "\n--- Search Results for '" << column_name << "' in channel '" << channel << "' with the value of '" << type << "'---\n";
+        auto start = high_resolution_clock::now();
+        cout << "\n--- Search Results for '" << column_name << "' in channel '" << channel << "' with the value of '" << type << "'(Binary search)---\n";
         searchByType2(selected, type, column_input);
+        auto end = high_resolution_clock::now(); 
+        auto duration = duration_cast<microseconds>(end - start);
+        cout << "Search took " << duration.count() << " microseconds.\n";
         return;
     }
 
