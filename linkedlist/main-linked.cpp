@@ -1,7 +1,7 @@
 #include <iostream>
 #include "store.hpp"
 #include "textChecker.hpp"
-#include "sort.hpp" // Include sort.hpp for sort_transactions
+#include "search.hpp"
 
 int main() {
     std::string filename = "financial_fraud_detection_dataset.csv";
@@ -59,24 +59,11 @@ int main() {
                 ++printed;
             }
         } else if (op == 2) {
-            // Use sort_transactions from sort.hpp
-            std::cout << "Sort operation selected.\n";
-            std::string channel;
-            std::cout << "Enter payment channel to sort (card, ACH, UPI, wire_transfer): ";
-            std::cin >> channel;
-            Transaction** selected = nullptr;
-            if (channel == "card") selected = &card_head;
-            else if (channel == "ACH") selected = &ACH_head;
-            else if (channel == "UPI") selected = &UPI_head;
-            else if (channel == "wire_transfer") selected = &wire_transfer_head;
-            else {
-                std::cout << "Invalid channel." << std::endl;
-                continue;
-            }
-            sort_transactions(*selected);
+            std::cout << "Sort operation selected. (Not implemented)\n";
+            // ...call sort function here...
         } else if (op == 3) {
-            std::cout << "Search operation selected. (Not implemented)\n";
-            // ...call search function here...
+            std::cout << "Search operation selected.\n";
+            search_by_payment_channel_and_type();
         } else if (op == 4) {
             std::cout << "Generate JSON operation selected. (Not implemented)\n";
             // ...call generate json function here...
@@ -84,7 +71,7 @@ int main() {
             std::cout << "Invalid operation.\n";
         }
 
-        // Always call text checker menu at the end
+        // After operation, call text checker menu
         bool to_menu = text_checker_menu();
         if (!to_menu) {
             // Free the linked lists before exit
