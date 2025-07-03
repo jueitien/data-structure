@@ -22,21 +22,59 @@ void SearchByBinary() {
 
     cout << "The data completely sorting\n";
     std::string target;
-    std::cout << "Enter the transaction type to search for (e.g., payment, deposit, transfer, withdrawal): ";
-    std::getline(std::cin, target); 
 
-    if (target != "payment" && target != "deposit" && target != "transfer" && target != "withdrawal") {
-        std::cout << "Please key in correct answer (payment, deposit, transfer, withdrawal), Invalid input\n";
-        return;
-    }
+    do {
+        std::cout << "Enter the transaction type to search for (e.g., payment, deposit, transfer, withdrawal): ";
+        std::getline(std::cin, target); 
 
-    auto start = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < resultSize; i++) {
-        if (filtered_transactions[i].transaction_type == target) {
-            std::cout << filtered_transactions[i].transaction_type << " | " << filtered_transactions[i].transaction_id << "\n";
-            result1[Size++] = filtered_transactions[i];
+        if (target != "payment" && target != "deposit" && target != "transfer" && target != "withdrawal") {
+            std::cout << "Invalid input\n";
+        }
+    } while (target != "payment" && target != "deposit" && target != "transfer" && target != "withdrawal");
+
+auto start = std::chrono::high_resolution_clock::now();
+    int left = 0;
+    int right = transactionCount - 1;
+    int foundIndex = -1;
+
+    // Binary Search to find target type 
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (filtered_transactions[mid].transaction_type == target) {
+            foundIndex = mid;
+            break;
+        }
+        else if (filtered_transactions[mid].transaction_type < target) {
+            left = mid + 1;
+        }
+        else {
+            right = mid - 1;
         }
     }
+
+    if (foundIndex != -1) {
+        // Step 2: Expand left and right to find all
+        int i = foundIndex;
+
+        // Expand left
+        while (i >= 0 && filtered_transactions[i].transaction_type == target) {
+            --i;
+        }
+        int start = i + 1; // one step back
+
+        // Expand right
+        i = foundIndex;
+        while (i < transactionCount && filtered_transactions[i].transaction_type == target) {
+            ++i;
+        }
+        int end = i - 1;
+
+        // Step 3: Print all matching entries
+        for (int j = start; j <= end; ++j) {
+            result1[Size++] = filtered_transactions[j];
+        }
+    } 
+
     auto end = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
@@ -47,8 +85,9 @@ void SearchByBinary() {
     if (ans == "Y")
     {
         generateJsonReport(result1,Size);
+    }  else {
+        return;
     }
     delete[] result1;
 
 }
-
