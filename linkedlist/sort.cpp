@@ -239,18 +239,18 @@ void sort_transactions(Transaction*& head) {
     std::cout << "Sorted " << count << " items in " << elapsed.count() << " ms. (Logged to sort_log.txt)\n";
     std::cout << "Sorted data written to " << (algo_choice == 2 ? "sort_insertion.txt" : "sort_merge.txt") << std::endl;
 
-    tmp = head;
-    Transaction* result_head = nullptr;
-    Transaction* result_tail = nullptr;
-    while (tmp != nullptr) {
-        append_transaction(result_head, result_tail, tmp);
-        tmp = tmp->next;
-    }
-    std::cout << "Generating JSON file...\n";
-    if(algo_choice == 2){
-        generate_json_from_linkedlist(result_head, "sort_insertion_result.json");
-    } else {
-        generate_json_from_linkedlist(result_head, "sort_merge_result.json");
-    }
+    // tmp = head;
+    // Transaction* result_head = nullptr;
+    // Transaction* result_tail = nullptr;
+    // while (tmp != nullptr) {
+    //     append_transaction(result_head, result_tail, tmp);
+    //     tmp = tmp->next;
+    // }
+    // std::cout << "Generating JSON file...\n";
+    // if(algo_choice == 2){
+    //     generate_json_from_linkedlist(result_head, "sort_insertion_result.json");
+    // } else {
+    //     generate_json_from_linkedlist(result_head, "sort_merge_result.json");
+    // }
 
 }
