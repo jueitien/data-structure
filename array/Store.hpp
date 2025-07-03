@@ -2,12 +2,19 @@
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
 
+// Store functions
 void storeSeperate();
 void storeAll();
 
-void SearchByLinear(); 
-void SearchByBinary(); 
-void generateJsonReport(Transaction transactions[],int size);
+// Search functions
+void SearchByBinary();
+void SearchByLinear();
 
+// Sort functions
+void heapSort();
+void sortByMergeSort();
+
+//generateJsonReport
+void generateJsonReport(Transaction transactions[],int size);
 
 #endif
