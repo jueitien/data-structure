@@ -35,9 +35,12 @@ string getFieldValue(Transaction* node, int column_input) {
 }
 
 // Main function
-void searchByType2(Transaction* head, const string& type, int column_input) {
+Transaction* searchByType2(Transaction* head, const string& type, int column_input) {
     string target = to_lowercase(type);
     bool found = false;
+
+    Transaction* result_head = nullptr;
+    Transaction* result_tail = nullptr;
 
     // Only binary search for transaction_id
     if (column_input == 1) {
@@ -52,11 +55,12 @@ void searchByType2(Transaction* head, const string& type, int column_input) {
 
             if (midVal == target) {
                 found = true;
+                append_transaction(result_head, result_tail, mid); // same append helper as used in searchByType
                 cout << "ID: " << mid->transaction_id
                      << ", Amount: $" << mid->amount
                      << ", Location: " << mid->location
                      << ", Type: " << mid->transaction_type << endl;
-                return;
+                break; // only one match for transaction_id expected in sorted binary search
             } else if (midVal < target) {
                 start = mid->next;
             } else {
@@ -71,6 +75,7 @@ void searchByType2(Transaction* head, const string& type, int column_input) {
             string field_value = to_lowercase(getFieldValue(temp, column_input));
             if (field_value == target) {
                 found = true;
+                append_transaction(result_head, result_tail, temp);
                 cout << "ID: " << temp->transaction_id
                      << ", Amount: $" << temp->amount
                      << ", Location: " << temp->location
@@ -83,4 +88,6 @@ void searchByType2(Transaction* head, const string& type, int column_input) {
     if (!found) {
         cout << "No transaction found for value: " << type << endl;
     }
+
+    return result_head;
 }
