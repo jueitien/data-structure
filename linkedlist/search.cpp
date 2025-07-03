@@ -5,6 +5,7 @@
 #include "search.hpp"
 #include "store.hpp"
 #include "sort_before_search.hpp"
+#include <limits>
 
 using namespace std;
 using namespace std::chrono;
@@ -119,41 +120,49 @@ void search_by_payment_channel_and_type()
     string column_name;
     int method;
 
-    // Loop until valid column is selected
-    while (true)
-    {
-        cout << "Which column you want to search? (Transaction ID[1], Sender Account[2], Receiver Account[3], Amount[4], Transaction Type[5], Location[6], Fraud Type[7]): ";
-        cin >> column_input;
 
-        switch (column_input)
-        {
-        case 1:
-            column_name = "transaction_id";
-            break;
-        case 2:
-            column_name = "sender_account";
-            break;
-        case 3:
-            column_name = "receiver_account";
-            break;
-        case 4:
-            column_name = "amount";
-            break;
-        case 5:
-            column_name = "transaction_type";
-            break;
-        case 6:
-            column_name = "location";
-            break;
-        case 7:
-            column_name = "fraud_type";
-            break;
-        default:
-            cout << "Invalid input. Please insert (1/2/3/4/5/6/7)\n";
-            continue;
-        }
-        break;
+while (true)
+{
+    cout << "Which column you want to search? (Transaction ID[1], Sender Account[2], Receiver Account[3], Amount[4], Transaction Type[5], Location[6], Fraud Type[7]): ";
+    cin >> column_input;
+
+    if (cin.fail()) {
+        cin.clear(); // clear error flag
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid input
+        cout << "Invalid input. Please enter a number (1-7).\n";
+        continue;
     }
+
+    switch (column_input)
+    {
+    case 1:
+        column_name = "transaction_id";
+        break;
+    case 2:
+        column_name = "sender_account";
+        break;
+    case 3:
+        column_name = "receiver_account";
+        break;
+    case 4:
+        column_name = "amount";
+        break;
+    case 5:
+        column_name = "transaction_type";
+        break;
+    case 6:
+        column_name = "location";
+        break;
+    case 7:
+        column_name = "fraud_type";
+        break;
+    default:
+        cout << "Invalid input. Please insert (1/2/3/4/5/6/7)\n";
+        continue;
+    }
+    break;
+}
+
 
     cout << "Enter the value to search: ";
     cin >> type;
