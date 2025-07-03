@@ -11,6 +11,7 @@
 void generateJsonReport(Transaction transactions[],int size) {
     nlohmann::json jsonReport;
 
+    
     // Populate the JSON object with transaction data
     for (int i = 0; i < size; ++i) {
         nlohmann::json transactionJson;
@@ -35,10 +36,7 @@ void generateJsonReport(Transaction transactions[],int size) {
 
         jsonReport.push_back(transactionJson); // Add the transaction to the report
     }
-
-    // Output JSON to console
-    cout << jsonReport.dump(4) << std::endl; // Pretty print with 4 spaces
-
+ 
     // Optionally, write JSON to a file
     std::ofstream outputFile("transactions_report.json");
     if (outputFile.is_open()) {
