@@ -42,46 +42,27 @@ Transaction* searchByType2(Transaction* head, const string& type, int column_inp
     Transaction* result_head = nullptr;
     Transaction* result_tail = nullptr;
 
-    // Only binary search for transaction_id
-    if (column_input == 1) {
-        Transaction* start = head;
-        Transaction* end = nullptr;
+    Transaction* start = head;
+    Transaction* end = nullptr;
 
-        while (start != end) {
-            Transaction* mid = getMiddle(start, end);
-            if (!mid) break;
+    while (start != end) {
+        Transaction* mid = getMiddle(start, end);
+        if (!mid) break;
 
-            string midVal = to_lowercase(mid->transaction_id);
+        string midVal = to_lowercase(getFieldValue(mid, column_input));
 
-            if (midVal == target) {
-                found = true;
-                append_transaction(result_head, result_tail, mid); // same append helper as used in searchByType
-                cout << "ID: " << mid->transaction_id
-                     << ", Amount: $" << mid->amount
-                     << ", Location: " << mid->location
-                     << ", Type: " << mid->transaction_type << endl;
-                break; // only one match for transaction_id expected in sorted binary search
-            } else if (midVal < target) {
-                start = mid->next;
-            } else {
-                end = mid;
-            }
-        }
-    } else {
-        // Fallback to linear search for other columns
-        cout << "Note: Only 'transaction_id' is sorted. Performing linear search for column " << column_input << ".\n";
-        Transaction* temp = head;
-        while (temp != nullptr) {
-            string field_value = to_lowercase(getFieldValue(temp, column_input));
-            if (field_value == target) {
-                found = true;
-                append_transaction(result_head, result_tail, temp);
-                cout << "ID: " << temp->transaction_id
-                     << ", Amount: $" << temp->amount
-                     << ", Location: " << temp->location
-                     << ", Type: " << temp->transaction_type << endl;
-            }
-            temp = temp->next;
+        if (midVal == target) {
+            found = true;
+            append_transaction(result_head, result_tail, mid);
+            cout << "ID: " << mid->transaction_id
+                 << ", Amount: $" << mid->amount
+                 << ", Location: " << mid->location
+                 << ", Type: " << mid->transaction_type << endl;
+            break;  // If values are unique, we can break here
+        } else if (midVal < target) {
+            start = mid->next;
+        } else {
+            end = mid;
         }
     }
 
