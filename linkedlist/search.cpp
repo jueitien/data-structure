@@ -54,10 +54,6 @@ Transaction* searchByType(Transaction* head, const string& type, int column_inpu
 
         if (to_lowercase(field_value) == to_lowercase(type)) {
             append_transaction(result_head, result_tail, temp);
-            cout << "ID: " << temp->transaction_id
-                 << ", Amount: $" << temp->amount
-                 << ", Location: " << temp->location
-                 << ", Type: " << temp->transaction_type << endl;
         }
         temp = temp->next;
     }

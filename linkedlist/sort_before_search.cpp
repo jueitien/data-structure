@@ -162,10 +162,6 @@ Transaction* searchByType2(Transaction* head, const string& type, int column_inp
         cout << "--- Binary Search Results ---\n";
         Transaction* temp = result_head;
         while (temp) {
-            cout << "ID: " << temp->transaction_id
-                 << ", Amount: $" << temp->amount
-                 << ", Location: " << temp->location
-                 << ", Type: " << temp->transaction_type << endl;
             temp = temp->next;
         }
     }
