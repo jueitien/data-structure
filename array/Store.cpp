@@ -69,7 +69,7 @@ void storeSeperate() {
     }   
 
 
-    fp = fopen("array/financial_fraud_detection_dataset.csv", "r");
+    fp = fopen("financial_fraud_detection_dataset.csv", "r");
     if (!fp) {
         cout << "Error opening file.\n";
         return;
@@ -99,7 +99,7 @@ void storeAll(){
     char row[MAXCHAR];
     int count = 0;
 
-    fp = fopen("array/financial_fraud_detection_dataset.csv", "r");
+    fp = fopen("financial_fraud_detection_dataset.csv", "r");
     if (!fp) {
         cout << "Error opening file.\n";
         return;
