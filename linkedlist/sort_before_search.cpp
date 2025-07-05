@@ -4,12 +4,6 @@
 #include <algorithm>
 using namespace std;
 
-// Convert string to lowercase
-string to_lowercase(const string& s) {
-    string out = s;
-    transform(out.begin(), out.end(), out.begin(), ::tolower);
-    return out;
-}
 
 // Get middle node for binary search
 Transaction* getMiddle(Transaction* start, Transaction* end) {
