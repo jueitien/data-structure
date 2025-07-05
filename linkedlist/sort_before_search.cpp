@@ -4,10 +4,14 @@
 #include <algorithm>
 using namespace std;
 
+// Convert string to lowercase
+string to_lowercase(const string& s) {
+    string out = s;
+    transform(out.begin(), out.end(), out.begin(), ::tolower);
+    return out;
+}
 
-
-
-// Get middle node between start and end
+// Get middle node for binary search
 Transaction* getMiddle(Transaction* start, Transaction* end) {
     if (!start) return nullptr;
     Transaction* slow = start;
@@ -20,7 +24,17 @@ Transaction* getMiddle(Transaction* start, Transaction* end) {
     return slow;
 }
 
-// Get value by column number
+// Get previous node (simulate for singly linked list)
+Transaction* getPrevious(Transaction* head, Transaction* node) {
+    if (!head || head == node) return nullptr;
+    Transaction* prev = head;
+    while (prev->next && prev->next != node) {
+        prev = prev->next;
+    }
+    return (prev->next == node) ? prev : nullptr;
+}
+
+// Get value from node based on selected column
 string getFieldValue(Transaction* node, int column_input) {
     switch (column_input) {
         case 1: return node->transaction_id;
@@ -34,19 +48,76 @@ string getFieldValue(Transaction* node, int column_input) {
     }
 }
 
-Transaction* getPrevious(Transaction* head, Transaction* node) {
-    if (!head || head == node) return nullptr;
-    Transaction* prev = head;
-    while (prev->next && prev->next != node) {
-        prev = prev->next;
+// ---------- Merge Sort Section ----------
+
+// Split the linked list into two halves
+void split(Transaction* source, Transaction** front, Transaction** back) {
+    Transaction* slow = source;
+    Transaction* fast = source->next;
+
+    while (fast) {
+        fast = fast->next;
+        if (fast) {
+            slow = slow->next;
+            fast = fast->next;
+        }
     }
-    return (prev->next == node) ? prev : nullptr;
+
+    *front = source;
+    *back = slow->next;
+    slow->next = nullptr;
 }
 
-// Main function
+// Merge two sorted linked lists by selected field
+Transaction* merge(Transaction* a, Transaction* b, int column_input) {
+    if (!a) return b;
+    if (!b) return a;
+
+    string valA = to_lowercase(getFieldValue(a, column_input));
+    string valB = to_lowercase(getFieldValue(b, column_input));
+
+    bool cmp;
+    if (column_input == 4)
+        cmp = stod(valA) < stod(valB); // numeric comparison
+    else
+        cmp = valA < valB;
+
+    if (cmp) {
+        a->next = merge(a->next, b, column_input);
+        return a;
+    } else {
+        b->next = merge(a, b->next, column_input);
+        return b;
+    }
+}
+
+// Recursive merge sort
+Transaction* mergeSort(Transaction* head, int column_input) {
+    if (!head || !head->next) return head;
+
+    Transaction* a;
+    Transaction* b;
+    split(head, &a, &b);
+
+    a = mergeSort(a, column_input);
+    b = mergeSort(b, column_input);
+
+    return merge(a, b, column_input);
+}
+
+// Wrapper to sort by column
+Transaction* sortByColumn(Transaction* head, int column_input) {
+    return mergeSort(head, column_input);
+}
+
+// ---------- Binary Search with Range Expansion ----------
+
 Transaction* searchByType2(Transaction* head, const string& type, int column_input) {
     string target = to_lowercase(type);
     bool found = false;
+
+    // Sort the linked list first
+    head = sortByColumn(head, column_input);
 
     Transaction* result_head = nullptr;
     Transaction* result_tail = nullptr;
@@ -61,27 +132,23 @@ Transaction* searchByType2(Transaction* head, const string& type, int column_inp
         string midVal = to_lowercase(getFieldValue(mid, column_input));
 
         if (midVal == target) {
-            // 🔍 Found one match. Now expand both left and right
             found = true;
 
             // Expand left
             Transaction* left = mid;
             while (left) {
-                string leftVal = to_lowercase(getFieldValue(left, column_input));
-                if (leftVal != target) break;
+                string val = to_lowercase(getFieldValue(left, column_input));
+                if (val != target) break;
                 append_transaction(result_head, result_tail, left);
-                // Stop at head
                 if (left == head) break;
-
-                // Move backward (simulate, must implement or track)
                 left = getPrevious(head, left);
             }
 
-            // Expand right (skip mid because it's already added)
+            // Expand right
             Transaction* right = mid->next;
             while (right) {
-                string rightVal = to_lowercase(getFieldValue(right, column_input));
-                if (rightVal != target) break;
+                string val = to_lowercase(getFieldValue(right, column_input));
+                if (val != target) break;
                 append_transaction(result_head, result_tail, right);
                 right = right->next;
             }
@@ -98,7 +165,7 @@ Transaction* searchByType2(Transaction* head, const string& type, int column_inp
     if (!found) {
         cout << "No transaction found for value: " << type << endl;
     } else {
-        // Display results
+        cout << "--- Binary Search Results ---\n";
         Transaction* temp = result_head;
         while (temp) {
             cout << "ID: " << temp->transaction_id
@@ -111,4 +178,3 @@ Transaction* searchByType2(Transaction* head, const string& type, int column_inp
 
     return result_head;
 }
-
